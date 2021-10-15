@@ -1,0 +1,195 @@
+#include <iostream>
+#include <string.h>
+const int NMAX=10;
+using namespace std;
+typedef char stringa[50];
+struct Anagrafe{
+	stringa nome;
+	stringa cognome;
+	stringa cell;
+	stringa fax;
+	stringa email;
+};
+typedef Anagrafe Elenco[NMAX];
+
+void inizializza(int &r);
+void inserisci(Elenco E, int &r, Anagrafe elem);
+void inserisciposizione(Elenco E, int &r, Anagrafe elem);
+void rimuoviposizione(Elenco E, int &r, Anagrafe elem);
+void stampaElenco(Elenco E, int r);
+void stampaRecord(Anagrafe a);
+void cerca(Elenco E, int r, stringa nome, stringa cognome);
+int menu();
+int main(int argc, char** argv) {
+	Elenco agendina;
+	int riempimento;
+	Anagrafe a;
+	bool esci=false;
+	stringa nome;
+	stringa cognome;
+	inizializza(riempimento);
+	while(!esci)
+	{
+		system("CLS");
+		switch(menu())
+		{
+			case 1:
+				inserisci(agendina,riempimento,a);
+				break;
+			case 2:
+				inserisciposizione(agendina,riempimento,a);
+				break;
+			case 3:
+				rimuoviposizione(agendina,riempimento,a);
+				break;
+			case 4:
+				stampaElenco(agendina, riempimento);
+				system("PAUSE");
+				break;
+			case 5:
+				cerca(agendina, riempimento, nome, cognome);
+				system("PAUSE");
+				break;
+			case 6:
+				esci=true;
+				break;
+			default: 
+			cout<<"scelta non valida "<<endl;
+			system("PAUSE");
+			break;	
+		}
+	}
+	return 0;
+}
+
+void inizializza(int &r)
+{
+	r=0;
+}
+void inserisci(Elenco E, int &r, Anagrafe elem)
+{
+	cout<<"Inserisci Nome: ";
+	cin>>elem.nome;
+	cout<<"Inserisci Cognome: ";
+	cin>>elem.cognome;
+	cout<<"Inserisci Numero di telefono: ";
+	cin>>elem.cell;
+	cout<<"Inserisci fax: ";
+	cin>>elem.fax;
+	cout<<"Inserisci Email: ";
+	cin>>elem.email;
+	E[r]=elem;
+	r++;
+}
+void stampaElenco(Elenco E, int r)
+{
+	cout<<"***************Stampa agendina***************"<<endl;
+	for(int i=0;i<r;i++)
+	{
+		stampaRecord(E[i]);
+	}
+}
+void stampaRecord(Anagrafe a)
+{
+	cout<<"******** Informazioni di *********";
+	cout<<a.nome<<" "<<a.cognome<<"*******************"<<endl;
+	cout<<" Cellulare:  "<<a.cell<<endl;
+	cout<<" Fax:  "<<a.fax<<endl;
+	cout<<" Email:  "<<a.email<<endl;
+}
+void cerca(Elenco E, int r, stringa nome, stringa cognome)
+{
+	cout<<"Inserisci il nome della persona da cercare"<<endl;
+	cin>>nome;
+	cout<<"Inserisci il cognome della persona da cercare"<<endl;
+	cin>>cognome;
+	bool trovato=false;
+	int i=0;
+	while(!trovato && i<r)
+	{
+		if(strcmp( E[i].nome, nome)==0 && strcmp( E[i].cognome, cognome)==0)
+		{
+			trovato=true;
+			stampaRecord(E[i]);
+		}
+		i++;
+	}
+	if(!trovato)
+	{
+		cout<<"\n   "<<nome<<" "<<cognome;
+		cout<<"************ non presente";
+	}
+}
+int menu()
+{
+	int scelta;
+	cout<<"*********AGENDINA***********"<<endl;
+	cout<<"1. Inserisci contatto nell'agenda"<<endl;
+	cout<<"2. Inserisci contatto in un posto scelto da te nell'agenda"<<endl;
+	cout<<"3. Rimuovi contatto dall'agenda"<<endl;
+	cout<<"4. Per Stampare tutta l'agenda"<<endl;
+	cout<<"5. Per cercare una persona nell'agenda"<<endl;
+	cout<<"6. Per uscire"<<endl;
+	cout<<"Inserisci la scelta: ";
+	cin>>scelta;
+	return scelta;
+}
+void inserisciposizione(Elenco E, int &r, Anagrafe elem)
+{
+	int posizione;
+	cout<<"Inserisci Posizione nella quale vuoi caricare il contatto"<<endl;
+	cin>>posizione;
+	if(posizione>r)
+	{
+		cout<<"L'agenda ha un numero di contatti minori alla posizione scelta"<<endl;
+		cout<<"Eseguo l'inserimento in ultima posizione"<<endl;
+		inserisci(E,r,elem);
+	}
+	else if(posizione<0)
+	{
+		cout<<"Non posso caricare in posizioni negative"<<endl;
+		cout<<"Eseguo l'inserimento in ultima posizione"<<endl;
+		inserisci(E,r,elem);
+	}
+	else
+	{
+		for(int i=r;i>posizione;i--)
+		{
+			E[i]=E[i-1];
+		}
+		r++;
+		cout<<"Inserisci Nome: ";
+		cin>>elem.nome;
+		cout<<"Inserisci Cognome: ";
+		cin>>elem.cognome;
+		cout<<"Inserisci Numero di telefono: ";
+		cin>>elem.cell;
+		cout<<"Inserisci fax: ";
+		cin>>elem.fax;
+		cout<<"Inserisci Email: ";
+		cin>>elem.email;
+		E[posizione]=elem;
+	}
+}
+void rimuoviposizione(Elenco E, int &r, Anagrafe elem)
+{
+	int posizione;
+	cout<<"Inserisci Posizione da cancellare"<<endl;
+	cin>>posizione;
+	if(posizione>=r)
+	{
+		cout<<"Non posso eliminare nessun contatto in questa posizione"<<endl;
+	}
+	else if(posizione<0)
+	{
+		cout<<"Non posso eliminare nessun contatto in questa posizione"<<endl;
+	}
+	else
+	{
+		for(int i=posizione;i<r;i++)
+		{
+			E[i]=E[i+1];
+		}
+		r--;
+	}
+}
